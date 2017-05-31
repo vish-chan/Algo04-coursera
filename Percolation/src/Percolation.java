@@ -8,12 +8,13 @@ import java.io.IOException;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
+    private static boolean sDEBUG = false;
     private WeightedQuickUnionUF mUFGrid = null;
+    private WeightedQuickUnionUF mUFGridForFind = null;
     private int[][] mGrid = null;
     private int mSize;
     private int mNumOfOpenSites;
-    public static boolean DEBUG = false;
-
+    
     // create n-by-n grid, with all sites blocked
     public Percolation(int n) {
         if (n <= 0)
@@ -21,7 +22,10 @@ public class Percolation {
         this.mSize = n;
         this.mNumOfOpenSites = 0;
         int gridSize = n * n;
-        this.mUFGrid = new WeightedQuickUnionUF(gridSize + 2);
+        this.mUFGrid = new WeightedQuickUnionUF(gridSize + 2); // virtual top
+                                                               // and bottom
+        this.mUFGridForFind = new WeightedQuickUnionUF(gridSize + 1); // virtual
+                                                                      // top
         this.mGrid = new int[n][n];
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
@@ -31,7 +35,7 @@ public class Percolation {
     // open site (row, col) if it is not open already
     public void open(int row, int col) {
         if (isOpen(row, col)) {
-            System.out.println("Open failed: Already open");
+            Percolation.sAddDebugPrint("Open failed: Already open");
             return;
         }
         int n = this.mSize;
@@ -40,41 +44,51 @@ public class Percolation {
         int nextRow = row + 1;
         int prevCol = col - 1;
         int nextCol = col + 1;
+        this.mGrid[row - 1][col - 1] = 1;
+        Percolation.sAddDebugPrint("Opened: " + row + "," + col);
         if (prevRow != 0) {
             if (isOpen(prevRow, col)) {
                 mUFGrid.union(calcIndex(prevRow, col), index);
-                System.out.println("Union: "+"["+prevRow+","+col+"] and ["+row+","+col+"]");
+                mUFGridForFind.union(calcIndex(prevRow, col), index);
+                Percolation.sAddDebugPrint("Union: " + "[" + prevRow + "," + col + "] and [" + row + "," + col + "]");
             }
         }
         if (nextRow != (n + 1)) {
             if (isOpen(nextRow, col)) {
                 mUFGrid.union(calcIndex(nextRow, col), index);
-                System.out.println("Union: "+"["+nextRow+","+col+"] and ["+row+","+col+"]");
+                mUFGridForFind.union(calcIndex(nextRow, col), index);
+                Percolation.sAddDebugPrint("Union: " + "[" + nextRow + "," + col + "] and [" + row + "," + col + "]");
             }
         }
         if (prevCol != 0) {
             if (isOpen(row, prevCol)) {
                 mUFGrid.union(calcIndex(row, prevCol), index);
-                System.out.println("Union: "+"["+row+","+prevCol+"] and ["+row+","+col+"]");
+                mUFGridForFind.union(calcIndex(row, prevCol), index);
+                Percolation.sAddDebugPrint("Union: " + "[" + row + "," + prevCol + "] and [" + row + "," + col + "]");
             }
         }
         if (nextCol != (n + 1)) {
             if (isOpen(row, nextCol)) {
                 mUFGrid.union(calcIndex(row, nextCol), index);
-                System.out.println("Union: "+"["+row+","+nextCol+"] and ["+row+","+col+"]");
+                mUFGridForFind.union(calcIndex(row, nextCol), index);
+                Percolation.sAddDebugPrint("Union: " + "[" + row + "," + nextCol + "] and [" + row + "," + col + "]");
             }
         }
-        this.mGrid[row - 1][col - 1] = 1;
-        System.out.println("Opened: "+row+","+col);
         if (row == 1) {
             mUFGrid.union(0, index);
-            System.out.println("Union with Virtual TOP");
+            mUFGridForFind.union(0, index);
+            Percolation.sAddDebugPrint("Union with Virtual TOP");
         }
-        if (index >= n * (n - 1) + 1 && index <= n * n) {
+        if (row == n) {
             mUFGrid.union(n * n + 1, index);
-            System.out.println("Union with Virtual BOTTOM");
+            Percolation.sAddDebugPrint("Union with Virtual BOTTOM");
         }
         mNumOfOpenSites += 1;
+    }
+
+    private static void sAddDebugPrint(String line) {
+        if (sDEBUG)
+            System.out.println(line);
     }
 
     private int calcIndex(int row, int col) {
@@ -94,7 +108,7 @@ public class Percolation {
     public boolean isFull(int row, int col) {
         if (!isOpen(row, col))
             return false;
-        return mUFGrid.connected(0, calcIndex(row, col));
+        return mUFGridForFind.connected(0, calcIndex(row, col));
     }
 
     // number of open sites
@@ -107,13 +121,14 @@ public class Percolation {
         int n = this.mSize;
         return (mUFGrid.connected(0, n * n + 1));
     }
-    
- // TEST CODE for TEST INPUTS
+
+    // TEST CODE for TEST INPUTS
     public static void main(String[] args) {
         runAllTestInputs("percolation");
-        //runOneTestInput("percolation\\input3.txt");
+        //runOneTestInput("percolation/input3.txt");
+        //runCustomTest("percolation/input3.txt", 4);
     }
-    
+
     private static void runAllTestInputs(String dirname) {
         File dir = new File(dirname);
         File[] filelist = dir.listFiles(new FilenameFilter() {
@@ -123,7 +138,7 @@ public class Percolation {
         });
         if (filelist != null) {
             for (int i = 0; i < filelist.length; i++)
-                runOneTestInput("percolation\\" + filelist[i].getName());
+                runOneTestInput("percolation/" + filelist[i].getName());
         }
     }
 
@@ -168,6 +183,51 @@ public class Percolation {
                 System.out.println(filepath + "    Percolates");
             else
                 System.out.println(filepath + "      Doesn't Percolate");
+        }
+    }
+
+    private static void runCustomTest(String filepath, int numcommands) {
+        Percolation mP = null;
+        File file = new File(filepath);
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String text = null;
+            text = reader.readLine();
+            if (text != null) {
+                int n = Integer.parseInt(text);
+                mP = new Percolation(n);
+                String[] site = new String[2];
+                while (((text = reader.readLine()) != null) && numcommands > 0) {
+                    text = text.trim().replaceAll(" +", " ");
+                    site = text.split(" ");
+                    if (site.length == 2) {
+                        mP.open(Integer.parseInt(site[0]), Integer.parseInt(site[1]));
+                        numcommands--;
+                    }
+                }
+            }
+        } 
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
+        } 
+        finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } 
+            catch (IOException e) {
+            }
+        }
+        if (mP != null) {
+            if (mP.isFull(3, 1))
+                System.out.println("ISFULL");
+            else
+                System.out.println("NOT ISFULL");
         }
     }
 }
