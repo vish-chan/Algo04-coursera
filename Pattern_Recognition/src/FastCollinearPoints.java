@@ -10,10 +10,12 @@ public class FastCollinearPoints {
         check(points);
         collinearMin = new ArrayList<>();
         collinearMax = new ArrayList<>();
-        for (int i = 0; i < points.length; i++) {
-            Point p = points[i];
-            Arrays.sort(points, p.slopeOrder());
-            this.checkForCollinears(points, p);
+        Point[] temp = new Point[points.length];
+        for (int i = 0; i < points.length; i++)
+            temp[i] = points[i];
+        for (Point p : points) {
+            Arrays.sort(temp, p.slopeOrder());
+            this.checkForCollinears(temp, p);
         }
         mLinesegments = new ArrayList<>();
         for (int i = 0; i < collinearMin.size(); i++)
@@ -24,6 +26,9 @@ public class FastCollinearPoints {
 
     private void checkForCollinears(Point[] points, Point p) {
         double[] slopes = new double[points.length];
+        Point maxPoint;
+        Point minPoint;
+        int count;
         for (int i = 0; i < points.length; i++) {
             slopes[i] = p.slopeTo(points[i]);
         }
@@ -33,9 +38,9 @@ public class FastCollinearPoints {
             int j = i + 1;
             if (j >= slopes.length)
                 break;
-            Point maxPoint = points[i];
-            Point minPoint = points[i];
-            int count = 1;
+            maxPoint = points[i];
+            minPoint = points[i];
+            count = 1;
             while (j < slopes.length && slopes[j] == cur) {
                 count++;
                 if (maxPoint.compareTo(points[j]) < 0)
@@ -60,7 +65,7 @@ public class FastCollinearPoints {
 
     private boolean checkDup(Point p1, Point p2) {
         for (int i = 0; i < collinearMin.size(); i++)
-            if (collinearMin.get(i) == p1 && collinearMax.get(i) == p2)
+            if ((collinearMin.get(i).compareTo(p1) == 0) && (collinearMax.get(i).compareTo(p2) == 0))
                 return true;
         return false;
     }
@@ -80,7 +85,7 @@ public class FastCollinearPoints {
             for (int j = i + 1; j < points.length; j++) {
                 if (points[i] == null || points[j] == null)
                     throw new java.lang.NullPointerException();
-                if (points[i].compareTo(points[j])==0)
+                if (points[i].compareTo(points[j]) == 0)
                     throw new java.lang.IllegalArgumentException();
             }
     }
