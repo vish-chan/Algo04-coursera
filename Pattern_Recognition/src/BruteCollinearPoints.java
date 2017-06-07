@@ -57,13 +57,14 @@ public class BruteCollinearPoints {
     private void check(Point[] points) {
         if (points == null)
             throw new java.lang.NullPointerException();
-        for (int i = 0; i < points.length - 1; i++)
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i] == null || points[j] == null)
-                    throw new java.lang.NullPointerException();
-                if (points[i].compareTo(points[j]) == 0)
-                    throw new java.lang.IllegalArgumentException();
+        Arrays.sort(points);
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i] == null || points[i + 1] == null)
+                throw new java.lang.NullPointerException();
+            if (points[i].compareTo(points[i + 1]) == 0) {
+                throw new java.lang.IllegalArgumentException();
             }
+        }
     }
 
     public int numberOfSegments() {
