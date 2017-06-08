@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Client {
     public static void main(String[] args) {
-        int N = 10;
+        int N = 100;
         Comparable[] a  = new Comparable[N];
         createInput(a, N);
         /*
@@ -14,7 +14,7 @@ public class Client {
         shell.Sort(a);
         */
         MergeSort mergeSort = new MergeSort();
-        mergeSort.Sort(a);
+        mergeSort.BottomUpSort(a);
     }
     
     public static void createInput(Comparable[] a, int N) {
