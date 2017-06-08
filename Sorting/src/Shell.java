@@ -7,7 +7,6 @@ public class Shell extends Base {
         h = h/3;
         System.out.print("Shell sort trace:\n");
         print(a);
-        System.out.print('\n');
         while (h>=1) {
             for (int i = h; i<N;i++) {
                 int j = i;
@@ -17,12 +16,10 @@ public class Shell extends Base {
                 }
                 System.out.println(h+": ");
                 print(a);
-                System.out.print('\n');
             }
             h = h/3;
         }
         print(a);
-        System.out.print('\n');
-        assert isSorter(a);
+        assert isSorted(a);
     }
 }

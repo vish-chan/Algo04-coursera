@@ -1,6 +1,6 @@
 
 public class Base {
-    protected static boolean isSorter(Comparable[] a) {
+    protected static boolean isSorted(Comparable[] a) {
         for (int i = 0; i < a.length - 1; i++)
             if (greater(a[i], a[i + 1]))
                 return false;
@@ -24,5 +24,6 @@ public class Base {
     protected static void print(Comparable[] A) {
         for (Comparable a : A)
             System.out.print(a + " ");
+        System.out.print('\n');
     }
 }

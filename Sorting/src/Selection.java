@@ -4,7 +4,6 @@ public class Selection extends Base {
     public void Sort(Comparable[] a) {
         System.out.print("Selection sort trace:\n");
         print(a);
-        System.out.print('\n');
         int min;
         for (int i = 0; i < a.length; i++) {
             min = i;
@@ -14,10 +13,8 @@ public class Selection extends Base {
             }
             exch(a, i, min);
             print(a);
-            System.out.print('\n');
         }
         print(a);
-        System.out.print('\n');
-        assert isSorter(a);
+        assert isSorted(a);
     }
 }

@@ -1,14 +1,37 @@
+import java.util.Random;
 
 public class Client {
     public static void main(String[] args) {
-        Comparable[] a = {10,8,9,7,5,6,4,3,2,1};
-        Comparable[] b = {10,8,9,7,5,6,4,3,2,1};
-        Comparable[] c = {10,8,9,7,5,6,4,3,2,1};
+        int N = 10;
+        Comparable[] a  = new Comparable[N];
+        createInput(a, N);
+        /*
         Insertion insertion = new Insertion();
-        //insertion.Sort(a);
+        insertion.Sort(a);
         Selection selection = new Selection();
-        //selection.Sort(b);
+        selection.Sort(a);
         Shell shell = new Shell();
-        shell.Sort(c);
+        shell.Sort(a);
+        */
+        MergeSort mergeSort = new MergeSort();
+        mergeSort.Sort(a);
+    }
+    
+    public static void createInput(Comparable[] a, int N) {
+        for(int i = 0; i < N ; i++)
+            a[i] = i;
+        shuffle(a);
+    }
+    
+    public static void shuffle(Comparable[] a) {
+        int r;
+        Comparable temp;
+        Random rand = new Random();
+        for (int i = 1; i<a.length;i++) {
+            r = rand.nextInt(i);
+            temp = a[i];
+            a[i] = a[r];
+            a[r] = temp;
+        }
     }
 }
