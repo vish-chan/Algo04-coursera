@@ -20,6 +20,11 @@ public class Base {
         a[i] = a[j];
         a[j] = temp;
     }
+    protected static int max(Comparable[] a, int i, int j) {
+        if(less(a[i], a[j]))
+            return j;
+        return i;
+    }
 
     protected static void print(Comparable[] A) {
         for (Comparable a : A)
