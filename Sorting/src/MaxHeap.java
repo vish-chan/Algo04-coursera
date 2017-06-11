@@ -1,10 +1,10 @@
 
-public class Heap extends Base{
+public class MaxHeap extends Base{
     Comparable[] mHeap;
     int N;
     int Max;
     
-    Heap(Comparable[] a, int size) {
+    MaxHeap(Comparable[] a, int size) {
         mHeap = a;
         N = a.length;
         Max = size;
@@ -15,7 +15,7 @@ public class Heap extends Base{
         print(mHeap);
     }
     
-    Heap(int size) {
+    MaxHeap(int size) {
         mHeap = new Comparable[size];
         N = 0;
         Max = size;

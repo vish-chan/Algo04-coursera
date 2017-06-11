@@ -1,29 +1,27 @@
 import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
 
     private static final int SPACE = 0;
     private final int[][] mtiles;
-    private int N;
+    private int mN;
 
     public Board(int[][] blocks) {
-        N = blocks.length;
-        mtiles = copy(blocks);
+        mN = blocks.length;
+        mtiles = blocks;
     }
 
     private int[][] copy(int[][] blocks) {
-        int[][] tiles = new int[N][N];
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++) {
+        int[][] tiles = new int[mN][mN];
+        for (int i = 0; i < mN; i++)
+            for (int j = 0; j < mN; j++) {
                 tiles[i][j] = blocks[i][j];
             }
         return tiles;
     }
 
-
     private int valueof(int i, int j) {
-        return (i * N + j) + 1;
+        return (i * mN + j) + 1;
     }
 
     private boolean isSpace(int i, int j) {
@@ -31,13 +29,13 @@ public class Board {
     }
 
     public int dimension() {
-        return N;
+        return mN;
     }
 
     public int hamming() {
         int hamming = 0;
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < mN; i++)
+            for (int j = 0; j < mN; j++) {
                 if (isSpace(i, j))
                     continue;
                 if (mtiles[i][j] != valueof(i, j))
@@ -48,8 +46,8 @@ public class Board {
 
     public int manhattan() {
         int manhattan = 0;
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < mN; i++)
+            for (int j = 0; j < mN; j++) {
                 int v = valueof(i, j);
                 if (isSpace(i, j) || mtiles[i][j] == v)
                     continue;
@@ -61,33 +59,32 @@ public class Board {
     }
 
     private int row(int v) {
-        return (v - 1) / N;
+        return (v - 1) / mN;
     }
 
     private int col(int v) {
-        return (v - 1) % N;
+        return (v - 1) % mN;
     }
 
     public boolean isGoal() {
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++) {
-                   if(mtiles[i][j] != (valueof(i, j))%(N*N))
-                       return false;
+        for (int i = 0; i < mN; i++)
+            for (int j = 0; j < mN; j++) {
+                if (mtiles[i][j] != (valueof(i, j)) % (mN * mN))
+                    return false;
             }
         return true;
     }
 
     public Board twin() {
-        int[][] twintiles = new int[N][N];
-        twintiles = copy(this.mtiles);
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N - 1; j++) {
+        int[][] twintiles = copy(this.mtiles);
+        for (int i = 0; i < mN; i++)
+            for (int j = 0; j < mN - 1; j++) {
                 if (!isSpace(i, j) && !isSpace(i, j + 1)) {
                     exch(twintiles, i, j, i, j + 1);
-                    break;
+                    return new Board(twintiles);
                 }
             }
-        return new Board(twintiles);
+        return null;
     }
 
     public boolean equals(Object y) {
@@ -98,10 +95,10 @@ public class Board {
         if (y.getClass() != this.getClass())
             return false;
         Board that = (Board) y;
-        if (this.N != that.N)
+        if (this.mN != that.mN)
             return false;
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
+        for (int i = 0; i < mN; i++)
+            for (int j = 0; j < mN; j++)
                 if (this.mtiles[i][j] != that.mtiles[i][j])
                     return false;
         return true;
@@ -109,8 +106,8 @@ public class Board {
 
     public Iterable<Board> neighbors() {
         Queue<Board> neighbors = new Queue<>();
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < mN; i++)
+            for (int j = 0; j < mN; j++) {
                 if (isSpace(i, j)) {
                     if (inRange(i - 1, j))
                         neighbors.enqueue(new Board(this.exchAndBuild(mtiles, i, j, i - 1, j)));
@@ -127,14 +124,14 @@ public class Board {
     }
 
     private boolean inRange(int i, int j) {
-        return (i >= 0 && i < N) && (j >= 0 && j < N);
+        return (i >= 0 && i < mN) && (j >= 0 && j < mN);
     }
 
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append(N + "\n");
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        s.append(mN + "\n");
+        for (int i = 0; i < mN; i++) {
+            for (int j = 0; j < mN; j++) {
                 s.append(String.format("%2d ", mtiles[i][j]));
             }
             s.append("\n");

@@ -18,7 +18,7 @@ public class Client {
         System.out.println(quickSort.QuickSelect(a, 50));
         quickSort.ThreeWaySort(a);
         */
-        Heap heap = new Heap(a, 10);
+        MaxHeap heap = new MaxHeap(a, 10);
         heap.Sort();
     }
     
