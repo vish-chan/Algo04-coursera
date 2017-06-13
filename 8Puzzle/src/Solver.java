@@ -41,12 +41,11 @@ public class Solver {
     private Node lastMove;
     private Node twinlastMove;
 
-    private MinPQ<Node> moves = new MinPQ<Node>();
-    private MinPQ<Node> twinMoves = new MinPQ<Node>();
-
     public Solver(Board initial) {
         if (initial == null)
             throw new java.lang.NullPointerException();
+        MinPQ<Node> moves = new MinPQ<Node>();
+        MinPQ<Node> twinMoves = new MinPQ<Node>();
         Node first = new Node(initial);
         moves.insert(first);
         Node firstTwin = new Node(initial.twin());
@@ -61,7 +60,6 @@ public class Solver {
             if (twinlastMove != null)
                 return;
         }
-
     }
 
     private Node checkOrExpand(MinPQ<Node> pq) {
