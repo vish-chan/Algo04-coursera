@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.util.Scanner;
 
 public class BST<Key extends Comparable<Key>, Value> {
 
@@ -10,6 +12,8 @@ public class BST<Key extends Comparable<Key>, Value> {
             // TODO Auto-generated constructor stub
             this.key = key;
             this.value = value;
+            this.left = null;
+            this.right = null;
         }
     }
 
@@ -47,16 +51,49 @@ public class BST<Key extends Comparable<Key>, Value> {
         return x;
     }
     
-    public int height(Node x) {
+    public int height() {
+        return height(root);
+    }
+    
+    private int height(Node x) {
         if(x==null)
             return 0;
         return 1 + max(height(x.left), height(x.right));
+    }
+    
+    public String toString() {
+        inorder(root);
+        return null;
+        
+    }
+    
+    private void inorder(Node x) {
+        if(x==null)
+            return;
+        inorder(x.left);
+        System.out.print(x.key + ":" + x.value + " ");
+        inorder(x.right);
     }
     
     private int max(int i, int j) {
         if(j>i)
             return j;
         return i;
+    }
+    
+    public static void main(String[] args) throws IOException {
+        Scanner scan = new Scanner(System.in);
+        int n = scan.nextInt(), key, value;
+        BST<Integer, Integer> bst = new BST<>();
+        while(n-- > 0){
+            key = scan.nextInt();
+            value = scan.nextInt();
+            bst.put(key, value);
+        }
+        bst.toString();
+        System.out.println();
+        System.out.print(bst.height());
+        System.out.println();
     }
     
 }
